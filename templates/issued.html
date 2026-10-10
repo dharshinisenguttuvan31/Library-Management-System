@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Issued Books | Library Management System</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #111827;
+            color: white;
+            padding: 25px 18px;
+            overflow-y: auto;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0 10px 30px;
+            border-bottom: 1px solid #374151;
+        }
+
+        .brand i {
+            color: #60a5fa;
+            margin-right: 10px;
+        }
+
+        .menu-title {
+            color: #9ca3af;
+            font-size: 11px;
+            margin: 25px 10px 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 13px 12px;
+            margin-bottom: 7px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .sidebar a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .topbar p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 17px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 23px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #dbeafe;
+            color: #2563eb;
+            border-radius: 10px;
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card h2 {
+            font-size: 27px;
+            margin-bottom: 7px;
+        }
+
+        .stat-card p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 22px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .panel-header h2 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .panel-header p {
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            padding: 20px 22px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            color: #94a3b8;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px #2563eb15;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            text-align: left;
+            padding: 16px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 17px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .book-name,
+        .member-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .muted {
+            color: #64748b;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-issued {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-returned {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .return-btn {
+            padding: 9px 12px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .return-btn:hover {
+            background: #047857;
+        }
+
+        .return-btn:disabled {
+            background: #cbd5e1;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 20px;
+            color: #64748b;
+        }
+
+        .empty i {
+            display: block;
+            font-size: 35px;
+            margin-bottom: 12px;
+            color: #94a3b8;
+        }
+
+        .empty h3 {
+            color: #334155;
+            margin-bottom: 8px;
+        }
+
+        .table-footer {
+            padding: 16px 22px;
+            color: #64748b;
+            font-size: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 25px 0 5px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 10px;
+            }
+
+            .brand {
+                font-size: 0;
+                padding: 10px 12px 25px;
+            }
+
+            .brand i {
+                font-size: 23px;
+            }
+
+            .menu-title,
+            .sidebar a span {
+                display: none;
+            }
+
+            .sidebar a {
+                justify-content: center;
+                padding: 14px 5px;
+            }
+
+            .main {
+                margin-left: 70px;
+                padding: 18px;
+            }
+
+            .topbar h1 {
+                font-size: 23px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <i class="fa-solid fa-book-open"></i>
+            Library System
+        </div>
+
+        <p class="menu-title">Main Menu</p>
+
+        <a href="/">
+            <i class="fa-solid fa-house"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/books">
+            <i class="fa-solid fa-book"></i>
+            <span>Books</span>
+        </a>
+
+        <a href="/members">
+            <i class="fa-solid fa-users"></i>
+            <span>Members</span>
+        </a>
+
+        <a href="/issued" class="active">
+            <i class="fa-solid fa-book-open-reader"></i>
+            <span>Issued Books</span>
+        </a>
+
+        <p class="menu-title">Quick Actions</p>
+
+        <a href="/add-book">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add New Book</span>
+        </a>
+
+        <a href="/add-member">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Add New Member</span>
+        </a>
+
+        <a href="/issue-book">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            <span>Issue a Book</span>
+        </a>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Issued Books</h1>
+                <p>Track borrowed books and manage returns.</p>
+            </div>
+
+            <a href="/issue-book" class="btn">
+                <i class="fa-solid fa-plus"></i>
+                Issue a Book
+            </a>
+        </header>
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                </div>
+
+                <h2>{{ issued_books|length }}</h2>
+                <p>Total Borrowing Records</p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+
+                <h2>
+                    {{ issued_books|selectattr('return_date', 'equalto', None)|list|length }}
+                </h2>
+
+                <p>Books Not Yet Returned</p>
+            </div>
+
+        </section>
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <h2>Borrowing Records</h2>
+                <p>View issued book details and return books when needed.</p>
+            </div>
+
+            <form action="/issued" method="GET" class="search-form">
+
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Search by book, member, or ID..."
+                        value="{{ search_query|default('') }}"
+                    >
+                </div>
+
+                <button type="submit" class="btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search
+                </button>
+
+                {% if search_query|default('') %}
+                    <a href="/issued" class="btn">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        Reset
+                    </a>
+                {% endif %}
+
+            </form>
+
+            <div class="table-wrapper">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Issue ID</th>
+                            <th>Book Details</th>
+                            <th>Member Details</th>
+                            <th>Issue Date</th>
+                            <th>Return Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for issue in issued_books %}
+
+                        <tr>
+                            <td>#{{ issue.issue_id }}</td>
+
+                            <td>
+                                <div class="book-name">
+                                    {{ issue.title or 'Book not found' }}
+                                </div>
+                                <div class="muted">
+                                    Book ID: {{ issue.book_id }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="member-name">
+                                    {{ issue.name or 'Member not found' }}
+                                </div>
+                                <div class="muted">
+                                    Member ID: {{ issue.member_id }}
+                                </div>
+                            </td>
+
+                            <td>{{ issue.issue_date or '-' }}</td>
+
+                            <td>
+                                {% if issue.return_date %}
+                                    {{ issue.return_date }}
+                                {% else %}
+                                    <span class="muted">Not returned</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if issue.return_date %}
+                                    <span class="badge badge-returned">
+                                        <i class="fa-solid fa-check"></i>
+                                        Returned
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-issued">
+                                        <i class="fa-solid fa-clock"></i>
+                                        Issued
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if issue.return_date %}
+                                    <button class="return-btn" disabled>
+                                        <i class="fa-solid fa-check"></i>
+                                        Returned
+                                    </button>
+                                {% else %}
+                                    <form
+                                        action="{{ url_for('return_book', issue_id=issue.issue_id) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Are you sure you want to return this book?');"
+                                    >
+                                        <button type="submit" class="return-btn">
+                                            <i class="fa-solid fa-rotate-left"></i>
+                                            Return Book
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty">
+                                    <i class="fa-solid fa-book-open"></i>
+                                    <h3>No borrowing records found</h3>
+                                    <p>
+                                        {% if search_query|default('') %}
+                                            No records match your search. Try another keyword.
+                                        {% else %}
+                                            No books have been issued yet. Issue a book to see its details here.
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="table-footer">
+                Displaying {{ issued_books|length }} borrowing record(s).
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            Library Management System
+        </footer>
+
+    </main>
+
+</body>
+</html>
